@@ -5,7 +5,6 @@ let readInput = document.getElementsByName('read');
 let yesRadio = document.getElementById('yes');
 let noRadio = document.getElementById('no');
 let addButton = document.getElementById('add-btn');
-let deleteButtons = document.querySelectorAll("button.delete-btn")
 let library = document.getElementById('library')
 
 let myLibrary = [];
@@ -35,6 +34,13 @@ function addBookElement() {
   deleteBtn.innerText = "Delete";
   newDiv.appendChild(deleteBtn);
 
+  let readBtn = document.createElement("button");
+  readBtn.classList.add("read-btn");
+  readBtn.dataset.readIndex = myLibrary.length - 1;
+  readBtn.innerText = "Change Read Status";
+  newDiv.appendChild(readBtn);
+
+
   library.appendChild(newDiv);
 }
 
@@ -46,5 +52,33 @@ function clearFields() {
   noRadio.checked = false;
 }
 
-addButton.addEventListener('click', addBookToLibrary)
+function deleteBook() {
+  if (event.target.className === 'delete-btn') {
+    bookLibraryIndex = event.target.dataset.deleteIndex;
+    parentDiv = event.target.parentNode;
 
+    myLibrary.splice(bookLibraryIndex, 1)
+    parentDiv.remove();
+  }
+}
+
+function toggleRead() {
+  if (event.target.className === "read-btn") {
+    bookLibraryIndex = event.target.dataset.readIndex;
+    parentDiv = event.target.parentNode;
+    selectedBook = myLibrary[bookLibraryIndex]
+
+    if (selectedBook.read) {
+      selectedBook.read = false
+    } else {
+      selectedBook.read = true
+    }
+    // console.log(parentDiv.childNodes[0].textContent);
+    parentDiv.childNodes[0].textContent = `${selectedBook.author}: ${selectedBook.title}. ${selectedBook.pages} pages long. Have I read this book? ${selectedBook.read}.`
+  }
+  console.log(myLibrary)
+}
+
+addButton.addEventListener('click', addBookToLibrary)
+library.addEventListener('click', deleteBook)
+library.addEventListener('click', toggleRead)
